@@ -201,10 +201,22 @@ export const getView001 = (params, pageSize, pageNum) => {
     return axios.post(`${base}/ams/api/view/bb001`, p).then(res => res.data); 
 };
 
+// 下载view001
+export const downloadView001 = (params, pageSize, pageNum) => {
+    const p = pckParam(params, {reqpageSize: pageSize, reqpageIndex: pageNum});
+    return axios.post(`${base}/ams/api/view/bb001`, p, {responseType: 'blob'}).then(res => res.data);
+};
+
 // view002
 export const getView002 = (params, pageSize, pageNum) => {
     const p = pckParam(params, {reqpageSize: pageSize, reqpageIndex: pageNum});
     return axios.post(`${base}/ams/api/view/bb002`, p).then(res => res.data); 
+};
+
+// 下载view002
+export const downloadView002 = (params, pageSize, pageNum) => {
+    const p = pckParam(params, {reqpageSize: pageSize, reqpageIndex: pageNum});
+    return axios.post(`${base}/ams/api/view/bb002`, p, {responseType: 'blob'}).then(res => res.data);
 };
 
 // view003

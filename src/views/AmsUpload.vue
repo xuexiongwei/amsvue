@@ -27,9 +27,9 @@
 					<el-upload ref="upload" multiple :action="uploadUrl" :file-list="fileList" :data="param" name="files" :auto-upload="false"
 	
 						:on-success="successHadnler" :accept="acceptStr" :on-change="handleChange" :on-remove="removeHandler">
-						<el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-  						<el-button style="margin-left: 10px;" size="small" type="success" :disabled="!isSubmit" @click="submitUpload">上传文件</el-button>
-						  <el-button style="margin-left: 10px;" size="small" type="success" @click="clearAll">清空上传记录</el-button>
+						<el-button slot="trigger" size="small" type="primary"><i class="el-icon-tickets"></i>&nbsp;&nbsp;选取文件</el-button>
+  						<el-button style="margin-left: 10px;" size="small" type="success" :disabled="!isSubmit" @click="submitUpload"><i class="el-icon-upload"></i>&nbsp;&nbsp;上传文件</el-button>
+						  <el-button style="margin-left: 10px;" size="small" type="success" @click="clearAll"><i class="el-icon-delete"></i>&nbsp;&nbsp;清空上传记录</el-button>
 						<div slot="tip" class="el-upload__tip" v-text="tipMsg"></div>
 					</el-upload>
 				</div>

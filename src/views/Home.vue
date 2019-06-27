@@ -1,9 +1,9 @@
 <template>
 	<el-row class="container">
 		<el-col :span="24" class="header">
-			<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
-				<span v-if="!collapsed">{{sysName}}</span>
-				<span v-if="!collapsed" style="font-size: 10px;">{{sysVersion}}</span>
+			<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'" style="position: relative;">
+				<span v-if="!collapsed" style="font-size: 15px;position: absolute;top: 18px;line-height: 20px;">{{sysName}}</span>
+				<span v-if="!collapsed" style="font-size: 10px;position: absolute;top: 15px;right: 10px;">{{sysVersion}}</span>
 			</el-col>
 			<el-col :span="10">
 				<div class="tools" @click.prevent="collapse">
@@ -73,8 +73,8 @@
 		data() {
 			return {
 				activeMenuId: '',
-				sysName:'ams 系统',
-				sysVersion: '1.0.7',
+				sysName:'建设工程规划许可证管理系统',
+				sysVersion: '1.0.9',
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '../../static/user.png',
@@ -218,8 +218,8 @@
 				//width:230px;
 				height:60px;
 				font-size: 22px;
-				padding-left:20px;
-				padding-right:20px;
+				padding-left:10px;
+				padding-right:10px;
 				border-color: rgba(238,241,146,0.3);
 				border-right-width: 1px;
 				border-right-style: solid;
