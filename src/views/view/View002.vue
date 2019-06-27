@@ -1,5 +1,6 @@
 <template>
-	<section id="view002">
+	<section id="view002" v-loading="loading" element-loading-text="导出数据中"
+		element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
 	<!--工具条-->
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
@@ -37,7 +38,6 @@
 				</el-form-item>
 				<el-form-item style="width:23%;">
 					<el-button type="primary" v-on:click="getView002">查询</el-button>
-					<el-button type="primary" v-on:click="exportExcel">导出</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
@@ -186,6 +186,8 @@
 
 		<!--工具条-->
 		<el-col :span="24" class="toolbar">
+			<el-button type="success" v-on:click="exportCurrentPageExcel"><i class="el-icon-download"></i>&nbsp;导出当前页</el-button>
+			<el-button type="primary" v-on:click="exportExcel"><i class="el-icon-download"></i>&nbsp;导出全部</el-button>
 			<el-pagination layout="sizes, prev, pager, next" @current-change="handleCurrentChange" @size-change="handleSizeChange"
 				:page-size="pageSize" :total="total" :page-sizes="paginationSize" style="float:right;">
 			</el-pagination>
@@ -250,15 +252,17 @@
 </template>
 
 <script>
-	import { getView002 } from '../../api/api';
+	import { getView002, downloadView002 } from '../../api/api';
 	import util from '../../common/js/util';
 	import AmsMapVue from '../AmsMap.vue';
 	import ProjectViewVue from '../project/ProjectView.vue';
 	import ShowImg from './ShowImg';
-	
+	import FileSaver from 'file-saver';
+
 	export default {
 		data() {
 			return {
+				loading: false,
 				prjSNToMap: '',
 				isShowMap: false,
 				filters: {
@@ -314,7 +318,8 @@
 			getView002() {
 				this.listLoading = true;
 				const param = this.filters;
-				getView002(param, this.pageSize, this.pageNum).then((resp) => {
+				getView002(param, this.pageSize, this.pageNum)
+				.then((resp) => {
 					this.listLoading = false;
 					if (resp.header.rspReturnCode !== '000000') {
 						this.$message({
@@ -327,11 +332,29 @@
 					this.viewList = resp.viewList;
 					this.total = resp.header.rspPageCount;
 					this.tableHeight = window.screen.availHeight - 450;
+				}).catch(error => {
+					this.loading = false;
+					this.$message({ message: error, type: 'error' });
 				});
 			},
-			exportExcel() {
+			exportCurrentPageExcel() {
 				const table = document.getElementById('exportTable');
-				util.exportExcel(table, '项目信息统计数据');
+				util.exportExcel(table, '项目信息统计数据（当前页）');
+			},
+			exportExcel() {
+				this.loading = true;
+				const param = this.filters;
+				param.export = true;
+				downloadView002(param, 99999, 1).then((resp) => {
+					this.loading = false;
+					const data = new Blob([resp], {
+						type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+					});
+					FileSaver.saveAs(data, `项目信息统计数据(全部).xlsx`);
+				}).catch(error => {
+					this.loading = false;
+					this.$message({ message: error, type: 'error' });
+				});
 			}
 		},
 		mounted() {

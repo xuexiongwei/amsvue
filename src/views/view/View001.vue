@@ -1,5 +1,7 @@
 <template>
-	<section id="view001">
+	<section id="view001" 
+		v-loading="loading" element-loading-text="导出数据中"
+		element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
 		<!--工具条-->
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :class="isShowFilter ? 'show filter-form' : 'hide filter-form'" :model="filters">
@@ -47,22 +49,21 @@
 				</el-form-item>
 			</el-form>
 			<el-form :inline="true" :model="filters">
-				<el-form-item style="width:68%;">
+				<el-form-item style="width:55%;">
 					<label>选择显示列信息：</label>
 					<el-select v-model="showCol" multiple placeholder="请选择显示列"  style="width:80%">
 						<el-option v-for="item in showColOption" :key="item.value" :label="item.label" :value="item"></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item style="width:14%;">
+				<el-form-item style="width:13%;">
 					是否显示筛选：<el-switch
 						v-model="isShowFilter"
 						active-color="#13ce66"
   						inactive-color="#ff4949">
 					</el-switch>
 				</el-form-item>
-				<el-form-item style="width:15%;">
+				<el-form-item style="width:27%;">
 					<el-button type="primary" v-on:click="getView001">查询</el-button>
-					<el-button type="primary" v-on:click="exportExcel">导出</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
@@ -83,6 +84,8 @@
 
 		<!--工具条-->
 		<el-col :span="24" class="toolbar">
+			<el-button type="success" v-on:click="exportCurrentPageExcel"><i class="el-icon-download"></i>&nbsp;导出当前页</el-button>
+			<el-button type="primary" v-on:click="exportExcel"><i class="el-icon-download"></i>&nbsp;导出全部</el-button>
 			<el-pagination layout="sizes, prev, pager, next" @current-change="handleCurrentChange" @size-change="handleSizeChange"
 				:page-size="pageSize" :total="total" :page-sizes="paginationSize" style="float:right;">
 			</el-pagination>
@@ -114,17 +117,18 @@
 				<td>{{item.housingStockNum}}</td>
 			</tr>
 		</table>
-
 	</section>
 </template>
 
 <script>
-	import { getView001, getPrjClasfiNames, queryDataByLike } from '../../api/api';
+	import { getView001, getPrjClasfiNames, queryDataByLike, downloadView001 } from '../../api/api';
 	import util from '../../common/js/util';
+	import FileSaver from 'file-saver';
 
 	export default {
 		data() {
 			return {
+				loading: false,
 				isShowFilter: true,
 				showColOption: [
 					{ label: '年份', value: 'prjYear'},
@@ -256,8 +260,42 @@
 				this.queryPrjClasfiName(query, '5');
 			},
 			exportExcel() {
+				
+				const param = {};
+				const filterArray = [];
+				let isQuery = false;
+				for (let key in this.filters) {
+					if (this.filters[key].length) {
+						isQuery = true;
+						param[key] = this.filters[key];
+						filterArray.push(`<input name="${key}" value="${this.filters[key]}"/>`);
+					}
+				}
+
+				if (!isQuery) {
+					this.$message({ message: '请您先选择过滤条件', type: 'error' });
+					return;
+				}
+
+				const col = ['count', 'sumArea', 'sumLen', 'aboveGroundSumArea', 'underGroundSumArea', 'buildings', 'housingStockNum'];
+				const col1 = this.showCol.map((item) => item.value);
+				param.export = true;
+				param.vhead = [...col1, ...col];
+				this.loading = true;
+				downloadView001(param, 99999, 1).then((resp) => {
+					this.loading = false;
+					const data = new Blob([resp], {
+						type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+					});
+					FileSaver.saveAs(data, `复合统计(全部).xlsx`);
+				}).catch(error => {
+					this.loading = false;
+					this.$message({ message: error, type: 'error' });
+				});
+			},
+			exportCurrentPageExcel() {
 				const table = document.getElementById('exportTable');
-				util.exportExcel(table, '符合统计数据');
+				util.exportExcel(table, '复合统计(当前页)');
 			}
 
 		},
