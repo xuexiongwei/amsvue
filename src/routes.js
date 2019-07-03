@@ -43,6 +43,7 @@ let routes = [
             { path: '/view002/:prjSNType', component: View002 },
             { path: '/view002', component: View002 },
             { path: '/view003', component: View003 },
+            { path: '/view003/:prjSN', component: View003 },
             { path: '/amsUpload', component: AmsUpload },
         ]
     },

@@ -72,7 +72,11 @@
 					</el-form>
 				</template>
 			</el-table-column>
-			<el-table-column prop="prjSN" label="许可证号" width="200"></el-table-column>
+			<el-table-column prop="prjSN" label="许可证号" width="200">
+				<template slot-scope="scope">
+					<a @click="goDetailReport(scope.row.prjSN)">{{scope.row.prjSN}}</a>
+				</template>
+			</el-table-column>
 			<el-table-column prop="prjStatus" label="项目状态" width="130"></el-table-column>
 			<el-table-column label="建设单位" width="200">
 				<template slot-scope="scope">
@@ -121,13 +125,13 @@
 			<el-table-column prop="prjSNType" label="许可证类型" width="150"></el-table-column>
 			<el-table-column label="延期文号" width="150">
 				<template slot-scope="scope">
-					<el-button v-if="scope.row.delaySN" size="small" @click="showImg(scope.row.delaySN)">{{scope.row.delaySN}}</el-button>
+					<el-button v-if="scope.row.delaySN" size="small" @click="showImg(scope.row.delaySN, scope.row.prjSN)">{{scope.row.delaySN}}</el-button>
 				</template>
 			</el-table-column> 
 			<el-table-column prop="delayCountDay" label="延长期" width="150"></el-table-column>
 			<el-table-column label="补正证号" width="150"> 
 				<template slot-scope="scope">
-					<el-button v-if="scope.row.correctionSN" size="small" @click="showImg(scope.row.correctionSN)">{{scope.row.correctionSN}}</el-button>
+					<el-button v-if="scope.row.correctionSN" size="small" @click="showImg(scope.row.correctionSN, scope.row.prjSN)">{{scope.row.correctionSN}}</el-button>
 				</template>
 			</el-table-column>  
 			<el-table-column prop="correctionDate" label="补正日期" width="150"></el-table-column>
@@ -180,6 +184,11 @@
 							</template>
 						</div>
 					</el-popover>
+				</template>
+			</el-table-column>
+			<el-table-column label="附图" width="150">
+				<template slot-scope="scope">
+					<el-button size="small" @click="viewImgHandler(scope.row.prjSN)">附图</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -245,7 +254,7 @@
 		</el-dialog>
 
 		<el-dialog :visible.sync="isShowImg" :fullscreen=true  title="查看">
-			<ams-show-img v-if="isShowImg" :fileName="fileName" :prjSN="filters.prjSN"></ams-show-img>
+			<ams-show-img v-if="isShowImg" :fileName="fileName" :prjSN="prjSN" :moreImg="moreImg"></ams-show-img>
 		</el-dialog>
 
 	</section>
@@ -291,12 +300,24 @@
 				},
 				tableHeight: 0,
 				isShowImg: false,
-				fileName: ''
+				fileName: '',
+				prjSN: '',
+				moreImg: false
 			}
 		},
 		methods: {
-			showImg(_fileName) {
+			goDetailReport(prjSN) {
+				this.$router.push({ path: `/view003/${prjSN}` });
+			},
+			viewImgHandler(_prjSN) {
+				this.moreImg = true;
+				this.prjSN = _prjSN;
+				this.isShowImg = true;
+			},
+			showImg(_fileName, _prjSN) {
+				this.moreImg = false;
 				this.fileName = _fileName;
+				this.prjSN = _prjSN;
 				this.isShowImg = true;
 			},
 			goProject(prjSN) {
@@ -403,6 +424,10 @@
 		.el-dialog__body {padding-top: 0;}
 
 		#exportTable { display: none; }
+
+		a {
+			cursor: pointer;
+		}
 	}
 
 	a.remark-a {

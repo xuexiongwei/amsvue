@@ -243,10 +243,16 @@ export const getUploadUrl = () => {
     return `${base}/ams/api/upload`; 
 };
 
+// 查询该许可证下附图
+export const fileQuery = (params) => {
+    const p = pckParam(params, {});
+    return axios.post(`${base}/ams/api/file/query`, p).then(res => res.data); 
+};
+
 
 // 组装下载地址
-export const getDownloadUrl = (fileName, prjSN) => { 
-    return `${base}/ams/api/download?fname=${fileName}&prjSN=${prjSN}`; 
+export const getDownloadUrl = (param, prjSN, type) => { 
+    return `${base}/ams/api/download?${type}=${param}&prjSN=${prjSN}`; 
 };
 
 

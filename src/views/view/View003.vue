@@ -407,6 +407,10 @@
 		},
 		mounted() {
 			this.tableHeight = window.screen.availHeight - 500;
+			this.filters.prjSN = this.$route.params.prjSN;
+			if (this.filters.prjSN) {
+				this.getView003();
+			}
 		}
 	}
 </script>
