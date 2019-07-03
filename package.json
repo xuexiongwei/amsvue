@@ -1,8 +1,8 @@
 {
-  "name": "vueadmin",
-  "version": "1.0.5",
-  "description": "vue admin project",
-  "author": "taylor <709161610@qq.com>",
+  "name": "amsProject",
+  "version": "1.1.0",
+  "description": "建设工程规划许可证管理系统",
+  "author": "taylor",
   "license": "MIT",
   "scripts": {
     "dev": "node build/dev-server.js",

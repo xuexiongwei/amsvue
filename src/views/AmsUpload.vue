@@ -12,7 +12,7 @@
 					</el-select>
 				</div>
 			</div>
-			<div class="filter-item" v-if="param.upLoadType === 'SAVE'">
+			<div class="filter-item" v-if="param.upLoadType === 'SAVE' || param.upLoadType === 'PROADDFILE'">
 				<label>许可证号</label>
 				<div>
 					<el-select v-model="param.prjSN" filterable remote reserve-keyword placeholder="请录入许可证号" 
@@ -53,7 +53,8 @@
 				uploadTypeOptions: [
 					{label: '项目信息/地图数据', value: 'ANALYSIS'},
 					{label: '批文图片', value: 'SAVE'},
-					{label: '字典信息', value: 'DIC'}
+					{label: '字典信息', value: 'DIC'},
+					{label: '许可证附图', value: 'PROADDFILE'}
 				],
 				prjSNOptions: [],
 				acceptStr: '',
@@ -132,6 +133,9 @@
 				} else if (val === 'DIC') {
 					this.acceptStr = '.xlsx,.xls';
 					this.tipMsg = '支持excel格式';
+				} else if (val === 'PROADDFILE') {
+					this.acceptStr = '.png';
+					this.tipMsg = '支持png格式';
 				}
 			},
 			submitUpload() {

@@ -24,10 +24,10 @@
 		<el-col :span="24" class="main">
 			<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
 				<!--导航菜单-->
-				<el-menu :default-active="activeMenuId" unique-opened v-show="!collapsed" @select="handleSelect">
+				<el-menu :default-active="activeMenuId" :router="isRouter" unique-opened v-show="!collapsed">
 					<el-submenu v-for="item in menuTree" :index="item.id" :key="item.id">
 						<template slot="title"><i :class="item.iconCls"></i>{{item.menuName}}</template>
-						<el-menu-item v-for="child in item.children" :index="child.id" :key="child.id">{{child.menuName}}</el-menu-item>
+						<el-menu-item v-for="child in item.children" :index="child.menuLink" :key="child.id">{{child.menuName}}</el-menu-item>
 					</el-submenu>
 				</el-menu>
 				<!--导航菜单-折叠后-->
@@ -72,9 +72,10 @@
 	export default {
 		data() {
 			return {
+				isRouter: true,
 				activeMenuId: '',
 				sysName:'建设工程规划许可证管理系统',
-				sysVersion: '1.0.9',
+				sysVersion: '1.1.0',
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '../../static/user.png',
@@ -93,38 +94,6 @@
 			}
 		},
 		methods: {
-			handleSelect(key, keyPath) {
-				this.breadcrumbData = [];
-				let menuItem;
-				for(let i = 0; i < this.menuTree.length; i++) {
-					if (this.menuTree[i].id === keyPath[0]) {
-						this.breadcrumbData.push(
-							{
-								id: keyPath[0],
-								name: this.menuTree[i].menuName
-							}
-						);
-						menuItem = this.menuTree[i];
-						break;
-					}
-				}
-
-				for(let j = 0; j < menuItem.children.length; j++) {
-					if (menuItem.children[j].id === keyPath[1]) {
-						this.breadcrumbData.push(
-							{
-								id: keyPath[1],
-								name: menuItem.children[j].menuName
-							}
-						);
-						menuItem = menuItem.children[j];
-						break;
-					}
-				}
-				
-				this.activeMenuId = menuItem.id;
-				this.$router.push(menuItem.menuLink);	
-			},
 			//退出登录
 			logout: function () {
 				var _this = this;
@@ -156,11 +125,14 @@
 
 				this.menuTree = util.menuTree;
 
-				const a = this.$route.fullPath;
+				let fullPath = this.$route.fullPath;
+				if (fullPath.indexOf('/view003/') === 0) {
+					fullPath = '/view003';
+				}
 				util.menuTree.forEach(parentMenu => {
 					parentMenu.children.forEach(menuItem => {
-						if (menuItem.menuLink === a) {
-							this.activeMenuId = menuItem.id;
+						if (menuItem.menuLink === fullPath) {
+							this.activeMenuId = fullPath;
 							this.breadcrumbData.push(
 								{ id: parentMenu.id, name: parentMenu.menuName }
 							);
@@ -180,7 +152,27 @@
 			}
 
 			this.getMenuTree(user.id);
-		}
+		},
+		watch: {
+			'$route' (to, from) {
+				this.breadcrumbData = [];
+				let path = to.path;
+
+				if (path.indexOf('/view003/') === 0) {
+					path = '/view003';
+				}
+				this.menuTree.forEach((rootMenu) => {
+					rootMenu.children.forEach((childMenu) => {
+						if (childMenu.menuLink === path ) {
+								this.activeMenuId = childMenu.menuLink;
+								this.breadcrumbData.push({id: '1', name: rootMenu.menuName});
+								this.breadcrumbData.push({id: '2', name: childMenu.menuName});
+							}
+						
+					});
+				});
+			}
+		},
 	}
 
 </script>
