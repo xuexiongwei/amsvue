@@ -1,5 +1,6 @@
 import XLSX from 'xlsx';
 import FileSaver from 'file-saver';
+import base64url from 'base64-url';
 
 var SIGN_REGEXP = /([yMdhsm])(\1*)/g;
 var DEFAULT_PATTERN = 'yyyy-MM-dd';
@@ -10,6 +11,12 @@ function padding(s, len) {
 };
 
 export default {
+    encode: function (context) {
+        return base64url.encode(context);
+    },
+    decode: function (encodeContext) {
+        return base64url.decode(encodeContext);
+    },
     getQueryStringByName: function (name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(reg);
@@ -166,9 +173,7 @@ export default {
             menuName: '业务功能',
             iconCls: 'fa fa-free-code-camp',
             children: [
-                {id: '1_1', menuName: '项目基本信息管理', menuLink: '/project'},
-                {id: '1_2', menuName: '项目属性信息管理', menuLink: '/ProjectAttribute'},
-                {id: '1_3', menuName: '项目明细信息管理', menuLink: '/projectDetail'}
+                {id: '1_1', menuName: '项目基本信息管理', menuLink: '/project'}
             ]
         },
         {

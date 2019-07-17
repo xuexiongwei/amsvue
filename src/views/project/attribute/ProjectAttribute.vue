@@ -4,13 +4,16 @@
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.prjSN" placeholder="许可证号"></el-input>
+					<el-input v-model="filters.prjSN" placeholder="许可证号" style="width:350px"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" v-on:click="getProjectAttributeListPage">查询</el-button>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="showFormHandler(null, null)">新增</el-button>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="returnProject()">返回</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
@@ -24,9 +27,18 @@
 			</el-table-column>
 			<el-table-column prop="prjSN" label="许可证号" width="200"></el-table-column>
 			<el-table-column prop="serialNumber" label="建筑序号" width="150"></el-table-column>
-			<el-table-column prop="prjNature" label="项目性质" width="150"></el-table-column>
+			<el-table-column prop="prjNature" label="项目性质" width="200"></el-table-column>
 			<el-table-column prop="prjAttr" label="规划项目/人防" width="150"></el-table-column>
-			<el-table-column prop="peacetimeUses" label="平时用途" width="150"></el-table-column>
+			<el-table-column label="平时用途" width="150">
+				<template slot-scope="scope">
+					<el-popover trigger="hover" placement="top">
+						<p><span>{{scope.row.peacetimeUses}}</span></p>
+						<div slot="reference" class="name-wrapper nowrap-text">
+							<span>{{scope.row.peacetimeUses}}</span>
+						</div>
+					</el-popover>
+				</template>
+			</el-table-column>
 			<el-table-column prop="aboveGroundLev" label="地上层数" width="150"></el-table-column>
 			<el-table-column prop="underGroundLev" label="地下层数" width="150"></el-table-column>
 			<el-table-column prop="aboveGroundHet" label="地上高度（米）" width="150"></el-table-column>
@@ -94,10 +106,14 @@
 					show: false,
 					data: null
 				},
-				tableHeight: 0
+				tableHeight: 0,
+				param: ''
 			}
 		},
 		methods: {
+			returnProject() {
+				this.$router.push({ path: `/project/${this.param}` });
+			},
 			handleSizeChange(pageSize) {
 				this.pageSize = pageSize;
 				this.getProjectAttributeListPage();
@@ -169,6 +185,10 @@
 			}
 		},
 		mounted() {
+			this.param = this.$route.params.param;
+			let p = util.decode(this.param);
+			p = JSON.parse(p);
+			this.filters.prjSN = p.prjSN;
 			this.getProjectAttributeListPage();
 		},
 		components: {

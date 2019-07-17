@@ -75,7 +75,7 @@
 				isRouter: true,
 				activeMenuId: '',
 				sysName:'建设工程规划许可证管理系统',
-				sysVersion: '1.1.0',
+				sysVersion: '1.1.3',
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '../../static/user.png',
@@ -161,6 +161,11 @@
 				if (path.indexOf('/view003/') === 0) {
 					path = '/view003';
 				}
+
+				if (path.indexOf('/project/') === 0) {
+					path = '/project';
+				}
+
 				this.menuTree.forEach((rootMenu) => {
 					rootMenu.children.forEach((childMenu) => {
 						if (childMenu.menuLink === path ) {
@@ -171,6 +176,16 @@
 						
 					});
 				});
+
+				if (path.indexOf('/projectAttribute') === 0) {
+						this.breadcrumbData.push({id: '1', name: '业务功能'});
+						this.breadcrumbData.push({id: '2', name: '项目属性管理'});
+				}
+
+				if (path.indexOf('/projectDetail') === 0) {
+						this.breadcrumbData.push({id: '1', name: '业务功能'});
+						this.breadcrumbData.push({id: '2', name: '项目明细管理'});
+				}
 			}
 		},
 	}

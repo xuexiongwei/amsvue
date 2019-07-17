@@ -1,6 +1,6 @@
 <template>
   <el-form :model="loginForm" :rules="rules2" ref="loginForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
-    <h3 class="title">AMS 系统登录</h3>
+    <h3 class="title">建筑工程规划许可证管理系统</h3>
     <el-form-item prop="account">
       <el-input type="text" v-model="loginForm.account" auto-complete="off" placeholder="账号"></el-input>
     </el-form-item>
