@@ -64,6 +64,10 @@
 
                     let points = resp.points;                    
 
+                    if (!points.length) {
+                        this.$message({ message: '没有找到相关点坐标，无法缩放地图', type: 'error' });
+                    }
+
                     for(let i = 0;i < points.length; i++){
 
                         let longlatVArray = points[i].longlatV.substring(0, points[i].longlatV.length - 1).split('|');

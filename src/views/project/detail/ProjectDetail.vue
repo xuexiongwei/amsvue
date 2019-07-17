@@ -4,13 +4,16 @@
 		<el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
 			<el-form :inline="true" :model="filters">
 				<el-form-item>
-					<el-input v-model="filters.prjSN" placeholder="许可证号"></el-input>
+					<el-input v-model="filters.prjSN" placeholder="许可证号" style="width:350px"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" v-on:click="getProjectDtailListPage">查询</el-button>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="showFormHandler(null, null)">新增</el-button>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" @click="returnProject()">返回</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
@@ -77,10 +80,14 @@
 					show: false,
 					data: null
 				},
-				tableHeight: 0
+				tableHeight: 0,
+				param: ''
 			}
 		},
 		methods: {
+			returnProject() {
+				this.$router.push({ path: `/project/${this.param}` });
+			},
 			handleSizeChange(pageSize) {
 				this.pageSize = pageSize;
 				this.getProjectDtailListPage();
@@ -161,6 +168,10 @@
 			}
 		},
 		mounted() {
+			this.param = this.$route.params.param;
+			let p = util.decode(this.param);
+			p = JSON.parse(p);
+			this.filters.prjSN = p.prjSN;
 			this.getProjectDtailListPage();
 		},
 		components: {

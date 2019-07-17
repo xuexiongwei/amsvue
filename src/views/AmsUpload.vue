@@ -24,9 +24,9 @@
 			<div class="filter-item" v-if="!!param.upLoadType">
 				<label>选择上传文件</label>
 				<div>
-					<el-upload ref="upload" multiple :action="uploadUrl" :file-list="fileList" :data="param" name="files" :auto-upload="false"
-	
-						:on-success="successHadnler" :accept="acceptStr" :on-change="handleChange" :on-remove="removeHandler">
+					<el-upload ref="upload" multiple :action="uploadUrl" :file-list="fileList" :data="param" 
+						name="files" :auto-upload="false" :on-error="errorHandler" :on-remove="removeHandler"
+						:on-success="successHadnler" :accept="acceptStr" :on-change="handleChange" >
 						<el-button slot="trigger" size="small" type="primary"><i class="el-icon-tickets"></i>&nbsp;&nbsp;选取文件</el-button>
   						<el-button style="margin-left: 10px;" size="small" type="success" :disabled="!isSubmit" @click="submitUpload"><i class="el-icon-upload"></i>&nbsp;&nbsp;上传文件</el-button>
 						  <el-button style="margin-left: 10px;" size="small" type="success" @click="clearAll"><i class="el-icon-delete"></i>&nbsp;&nbsp;清空上传记录</el-button>
@@ -168,6 +168,10 @@
 				if (!loadingFiles || loadingFiles.length === 0) {
 					this.loading = false;
 				}
+			},
+			errorHandler() {
+				this.loading = false;
+				this.$message({ message: '上传文件失败', type: 'error' });
 			}
 		}
 	}

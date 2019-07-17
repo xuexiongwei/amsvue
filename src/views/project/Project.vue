@@ -115,8 +115,10 @@
 					</el-popover>
 				</template>
 			</el-table-column>
-			<el-table-column fixed="right" label="操作" width="150">
+			<el-table-column fixed="right" label="操作" width="300">
 				<template slot-scope="scope">
+					<el-button size="small" @click="attributeHandler(scope.$index, scope.row)">属性</el-button>
+					<el-button size="small" @click="detailHandler(scope.$index, scope.row)">明细</el-button>
 					<el-button size="small" @click="showFormHandler(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
 				</template>
@@ -170,6 +172,24 @@
 			}
 		},
 		methods: {
+			attributeHandler(index, row) {
+				const p = {
+					filterData: this.filters,
+					prjSN: row.prjSN
+				};
+				let str = JSON.stringify(p);
+				str = util.encode(str);
+				this.$router.push({ path: `/projectAttribute/${str}` });
+			},
+			detailHandler(index, row) {
+				const p = {
+					filterData: this.filters,
+					prjSN: row.prjSN
+				};
+				let str = JSON.stringify(p);
+				str = util.encode(str);
+				this.$router.push({ path: `/projectDetail/${str}` });
+			},
 			handleSizeChange(pageSize) {
 				this.pageSize = pageSize;
 				this.getProjectListPage();
@@ -244,6 +264,12 @@
 			}
 		},
 		mounted() {
+			const param = this.$route.params.param;
+			if (param) {
+				let p = util.decode(param);
+				p = JSON.parse(p);
+				this.filters = p.filterData;
+			}
 			this.getProjectListPage();
 		},
 		components: {
